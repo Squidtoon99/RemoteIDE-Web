@@ -79,4 +79,19 @@ const getAssignment: ({ course_id, assignment_id }: { course_id: number; assignm
     });
 }
 
-export { getUser, getCourse, getAssignments, getAssignment };
+const getProjects = async () => {
+    const nextCookies = cookies();
+    const  cookie = nextCookies.getAll().map((a => {
+        return a.name + '=' + a.value;
+    })).join('; ');
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/v1/users/@me/projects`, {
+        headers: {
+            'Cookie': cookie
+        }
+    });
+    return res.json().catch((err) => {
+        console.log(err);
+        return null;
+    });
+}
+export { getUser, getCourse, getAssignments, getAssignment, getProjects };

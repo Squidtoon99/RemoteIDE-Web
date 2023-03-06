@@ -20,7 +20,7 @@ const days = [
 
 const bg = (day: Date) => {
     let cls = [];
-    if (day.getDate() === new Date().getDate()) {
+    if (day.getDate() === new Date().getDate() && day.getMonth() === new Date().getMonth()) {
         cls.push(...["bg-primary",
             "text-white",
             "p-1 sm:p-0",
@@ -81,7 +81,7 @@ const Calendar = () => {
                                 {week.map((day, i) => {
                                     return (
                                         <td key={i}>
-                                            <Link href={`/dashboard/calendar/?day=${day.getTime()}`}>
+                                            <Link href={`/dashboard/calendar/?q=${day.getMonth()}-${day.getDay()}-${day.getFullYear()}`}>
                                                 <div className="px-2 py-2 cursor-pointer flex w-full justify-center">
                                                     <p className={`text-base ${bg(day)}`}>{format(day, "d")}</p>
                                                 </div>

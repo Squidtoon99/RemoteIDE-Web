@@ -3,6 +3,8 @@ import {Assignment, Course} from 'types';
 import {Menu, Transition} from '@headlessui/react'
 import React, {Fragment} from 'react'
 import {ChevronDownIcon} from '@heroicons/react/20/solid'
+import {formatDistance} from "date-fns";
+import {useRouter} from "next/navigation";
 
 const UnitCard = ({
                         id,
@@ -12,12 +14,15 @@ const UnitCard = ({
                       teacher
                   }: { id: number; title: string; description?: string; assignments: Assignment[]; course: Course, teacher: boolean }) => {
 
+    const router = useRouter();
+
     const delete_unit = async () => {
         const res = await fetch(`/api/v1/courses/${course.id}/units/${id}`, {
             method: 'DELETE'
         });
         if (res.status === 200) {
             console.log('deleted unit');
+            router.refresh();
         } else {
             console.log('failed to delete unit');
         }
@@ -29,9 +34,12 @@ const UnitCard = ({
         });
         if (res.status === 200) {
             console.log('edited unit', res);
+             router.refresh();
         } else {
             console.log('failed to edit unit', res);
         }
+
+
     }
 
     return (
@@ -140,7 +148,8 @@ const UnitCard = ({
                     {assignments.map(assignment => (
                         <tr key={assignment.id} className="border-t text-center">
                             <td className="px-4 py-2">{assignment.name}</td>
-                            <td className="px-4 py-2">{assignment.due_date}</td>
+                            {/* @ts-ignore */}
+                            <td className="px-4 py-2" >{formatDistance(new Date(Date.parse(assignment.due_date)), new Date(), { addSuffix: true })}</td>
                             {!teacher && <td className="px-4 py-2">
                                 <a className="bg-primary hover:bg-primary/75 text-white px-4 py-2 rounded-3xl"
                                    href={`/d/courses/${course.id}/proxy-svc/${assignment.id}`}>

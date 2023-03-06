@@ -1,6 +1,8 @@
 import {Roboto} from "@next/font/google";
 import Sidebar from './navigation/sidebar';
 import type {FC, ReactNode} from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+import WrappedToast from "@dash/WrappedToast";
 
 type Props = { children: ReactNode; };
 
@@ -17,6 +19,7 @@ const DashboardLayout: FC<Props> = ({ children }) => {
             <div className="flex flex-1 flex-col lg:ml-[calc(13%_+_7rem)] sm:ml-[calc(13%_+_7rem)] md:lg:ml-[calc(13%_+_7rem)] ml-0 w-auto py-6" style={roboto.style}>
                 {children}
             </div>
+            <WrappedToast/>
         </div></>);
 };
 

@@ -2,7 +2,7 @@ import UnitCard from "app/dashboard/components/UnitCard";
 import {Course} from "types";
 import {getAssignments, getCourse, getUser} from "../../components";
 import {Questrial} from "@next/font/google";
-import {TeacherCard} from "../../components/TeacherCard";
+import {TeacherCard} from "../TeacherCard";
 
 const title = Questrial({
     weight: "400",
@@ -39,7 +39,7 @@ const Page = async ({params: {id}}: { params: { id: number; }; }) => {
         </div>
 
         {user.is_teacher && <div className="flex flex-col w-1/2">
-            <TeacherCard course_id={id}/>
+            <TeacherCard course={course}/>
         </div>}
         <div className="flex flex-col gap-3">
             {units}

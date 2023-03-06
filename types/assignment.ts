@@ -1,4 +1,5 @@
 type Assignment = {
+    course_id: number;
     unit_id: number;
     id: number;
     name: string;

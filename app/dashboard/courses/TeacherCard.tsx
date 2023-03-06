@@ -1,11 +1,17 @@
 "use client";
 import {AnalyticsIcon, PolygonIcon, TriangleIcon} from "../icons";
-import {Dialog, Popover, Transition} from "@headlessui/react";
+import {Popover, Transition} from "@headlessui/react";
 import {ChevronDownIcon} from "@heroicons/react/20/solid";
-import {Fragment, useState} from "react";
+import {FormEvent, Fragment, useState} from "react";
 import Image from "next/image";
-import * as Label from "@radix-ui/react-label";
 import {Roboto} from "@next/font/google";
+
+import {useRouter} from 'next/navigation';
+import CreateUnitModal from "@dash/courses/modals/CreateUnitModal";
+import CreateAssignmentModal from "@dash/courses/modals/CreateAssignmentModal";
+import {Course} from "@types";
+import {toast} from "react-toastify";
+import {AssignmentDataType, CreateDataType, UnitDataType} from "@dash/courses/types";
 
 type DialogType = "" | "unit" | "assignment" | "notebook";
 
@@ -35,13 +41,14 @@ const create_options: ({ name: string; icon: any; description: string; modal: Di
     }
 ]
 
-export function TeacherCard({course_id}: { course_id: number }) {
+export function TeacherCard({course}: { course: Course }) {
     let [dialog, setDialog] = useState<DialogType>("");
 
-    const [unit_name, setUnitName] = useState<string>("");
+    const router = useRouter();
 
     const closeModal = () => {
         setDialog("");
+        router.refresh();
     }
 
     const openModal = (type: DialogType) => {
@@ -51,31 +58,91 @@ export function TeacherCard({course_id}: { course_id: number }) {
     }
 
     const create = (type: DialogType) => {
-        return () => {
+        return (e: FormEvent, data: CreateDataType) => {
+            e.preventDefault();
             if (type === "unit") {
-                // create unit
-                fetch(`/api/v1/courses/${course_id}/units`, {
+                data = data as UnitDataType;
+                if (!data?.unit_name) {
+                    return;
+                }
+
+                fetch(`/api/v1/courses/${course.id}/units`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        name: unit_name
+                        name: data.unit_name
                     })
                 }).then(res => {
                     if (res.status === 200) {
                         // success
-                        setDialog("");
+                        closeModal();
+                        toast("Unit created", {
+                            type: "success",
+                            position: "bottom-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                        })
                     } else {
                         // error
-                        console.log("error", res);
+                        console.error(res);
+                    }
+                });
+            } else if (type === "assignment") {
+                data = data as AssignmentDataType;
+                if (!data?.name || !data?.template || !data?.unit || !data?.due_date) {
+                    return;
+                }
+                console.log(data.due_date.toString());
+                fetch(`/api/v1/courses/${course.id}/assignments`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: data.name,
+                        description: data.description,
+                        template: data.template,
+                        unit_id: data.unit.id,
+                        due_date: data.due_date.toString()
+                    })
+                }).then(res => {
+                    if (res.status === 200) {
+                        // success
+                        closeModal();
+                    } else {
+                        // error
+                        console.error(res);
+                        let msg: string;
+
+                        // create a toast of the error content using react-toastify
+                        res.json().then((data) => {
+                                if (data?.message) {
+                                    msg = data.message;
+                                }
+                            }
+                        ).catch(() => {
+                            msg = "An unknown error occurred";
+                        }).finally(() => {
+                                toast(msg, {
+                                    type: "error",
+                                    position: "bottom-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                });
+
+                            }
+                        );
+
                     }
                 });
             }
-            return closeModal();
         }
     }
-
     return <>
         <div className="flex-row gap-2 max-w-sm px-4 w-full">
             <Popover className="relative">
@@ -129,7 +196,7 @@ export function TeacherCard({course_id}: { course_id: number }) {
                                     </div>
                                     <div className="bg-gray-50 p-4">
                                         <a
-                                            href="app/dashboard/courses/[id]##"
+                                            href="/dashboard/courses/[id]##"
                                             className="flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                                         >
                       <span className="flex items-center">
@@ -150,67 +217,8 @@ export function TeacherCard({course_id}: { course_id: number }) {
             </Popover>
         </div>
         {/*    Various Modals for configuration */}
-        <Transition appear show={dialog === "unit"} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={closeModal}>
-                <Transition.Child
-                    as={Fragment}
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                >
-                    <div className="fixed inset-0 bg-black bg-opacity-25"/>
-                </Transition.Child>
-                <div className="fixed inset-0 overflow-y-auto left-1/2 -translate-x-1/2">
-                    <div className="min-h-full items-center justify-center p-4 text-center">
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0 scale-95"
-                            enterTo="opacity-100 scale-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100 scale-100"
-                            leaveTo="opacity-0 scale-95"
-                        >
-                            <Dialog.Panel
-                                className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                                <Dialog.Title
-                                    as="h3"
-                                    className="text-lg font-medium leading-6 text-gray-900"
-                                >
-                                    Create Unit
-                                </Dialog.Title>
-                                <div className="mt-2 align-center flex flex-col">
-                                    <div className={"flex flex-row"}>
-                                        <Label.Root htmlFor={"unit_name"} className={"min-w-sm"}>
-                                            Name
-                                        </Label.Root>
-                                        <input
-                                            className={"w-full ml-3 inline-flex justify-center px-2 shadow-primary focus:border-primary focus:outline-none focus:ring focus:ring-primary rounded-md bg-primary/10"}
-                                            type={"text"} id={"unit_name"}
-                                            onInput={(e) => {
-                                                setUnitName((e.target as HTMLInputElement).value)
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="mt-4 flex w-full justify-end">
-                                    <button
-                                        type="button"
-                                        disabled={unit_name === ""}
-                                        className="inline-flex justify-center rounded-3xl border border-transparent bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/75 disabled:pg-primary/75 disabled:hover:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-all ease-in-out duration-300"
-                                        onClick={create("unit")}
-                                    >
-                                        Create
-                                    </button>
-                                </div>
-                            </Dialog.Panel>
-                        </Transition.Child>
-                    </div>
-                </div>
-            </Dialog>
-        </Transition>
+        <CreateUnitModal show={dialog === "unit"} create={create("unit")} closeModal={closeModal}/>
+        <CreateAssignmentModal course={course} show={dialog === "assignment"} create={create("assignment")}
+                               closeModal={closeModal}/>
     </>
 }

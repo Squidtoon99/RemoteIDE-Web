@@ -9,6 +9,9 @@
       "@dash/*": [
         "./app/dashboard/*"
       ],
+      "@types": [
+        "./types"
+      ]
     },
     "lib": [
       "dom",

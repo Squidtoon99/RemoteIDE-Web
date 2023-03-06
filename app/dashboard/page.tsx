@@ -25,7 +25,6 @@ const Dashboard = async () => {
     } else {
         topSplit = "w-1/3";
     }
-
     return (
         <>
             <div className="flex flex-row">
