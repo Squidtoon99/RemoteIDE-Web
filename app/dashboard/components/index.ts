@@ -1,5 +1,4 @@
 import {Assignment, Course, User} from 'types';
-import {redirect} from "next/navigation";
 import {cookies} from 'next/headers';
 
 export { default as Classes } from './Courses';
@@ -21,10 +20,10 @@ const getUser: () => Promise<User> = async () => {
 
     return res.json().catch((err) => {
         console.log(err);
-        redirect('/login');
+        return null;
     }).then((data) => {
-        if (data.error) {
-            redirect('/login');
+        if (data?.error) {
+            return null;
         }
         return data;
     });

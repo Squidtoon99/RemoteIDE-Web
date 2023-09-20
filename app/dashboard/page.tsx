@@ -1,6 +1,7 @@
 import {Questrial} from "@next/font/google";
 import {Analytics, Calendar, Classes, getUser, Tasks} from './components';
 import Teacher from "./components/Teacher";
+import JoinClassPage from "@dash/components/JoinClassPage";
 // E-Learning Dashboard Home Page
 
 const title = Questrial({
@@ -14,8 +15,9 @@ const title = Questrial({
 // Tasks and Analytics should take up 1/2 of the row each
 const Dashboard = async () => {
     const user = await getUser();
+
     if (user === null) {
-        return <div>Not logged in</div>;
+        return <div>Redirecting...</div>
     }
 
     let topSplit: string;
@@ -25,6 +27,13 @@ const Dashboard = async () => {
     } else {
         topSplit = "w-1/3";
     }
+
+    if (user.courses.length === 0) {
+        return <JoinClassPage/>
+    } else {
+        console.log("courses: ", user.courses);
+    }
+
     return (
         <>
             <div className="flex flex-row">

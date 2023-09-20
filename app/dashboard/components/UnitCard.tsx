@@ -5,6 +5,7 @@ import React, {Fragment} from 'react'
 import {ChevronDownIcon} from '@heroicons/react/20/solid'
 import {formatDistance} from "date-fns";
 import {useRouter} from "next/navigation";
+import {toast} from "react-toastify";
 
 const UnitCard = ({
                         id,
@@ -22,12 +23,51 @@ const UnitCard = ({
         });
         if (res.status === 200) {
             console.log('deleted unit');
+            toast('Deleted Unit', {
+                type: 'success',
+                position: 'bottom-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+            })
             router.refresh();
         } else {
             console.log('failed to delete unit');
         }
     }
 
+    const delete_assignment = async (assignment_id: number)  => {
+        const res = await fetch(`/api/v1/courses/${course.id}/assignments/${assignment_id}`, {
+            method: 'DELETE'
+        });
+        if (res.status === 200) {
+            console.log('deleted assignment');
+            toast('Deleted Assignment', {
+                type: 'success',
+                position: 'bottom-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+            })
+            router.refresh();
+        } else {
+            // toast error
+            toast(
+                'Failed to delete assignment',
+                {
+                    type: 'error',
+                    position: 'bottom-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true
+                }
+            )
+            console.log('failed to delete assignment');
+        }
+    }
     const edit_unit = async () => {
         const res = await fetch(`/api/v1/courses/${course.id}/units/${id}`, {
             method: 'PUT'
@@ -159,13 +199,13 @@ const UnitCard = ({
                             {teacher &&
                                 <td className="px-4 py-2">
                                     <a className="bg-primary/75 text-white py-2 px-4 rounded-full ml-3"
-                                       href={`/d/courses/${course.id}/assignments/${assignment.id}/edit`}>
+                                       href={`/d/courses/${course.id}/proxy-svc/${assignment.id}/?mode=edit`}>
                                         Edit
                                     </a>
-                                    <a className="bg-red-500/75 text-white py-2 px-4 rounded-full ml-3"
-                                       href={`/d/courses/${course.id}/assignments/${assignment.id}/delete`}>
+                                    <button className="bg-red-500/75 text-white py-2 px-4 rounded-full ml-3"
+                                       onClick={() => delete_assignment(assignment.id)}>
                                         Delete
-                                    </a>
+                                    </button>
                                 </td>
                             }
                         </tr>

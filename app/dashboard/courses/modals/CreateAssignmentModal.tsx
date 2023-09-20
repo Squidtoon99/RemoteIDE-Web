@@ -65,9 +65,10 @@ const CreateAssignmentModal = ({
 
     let state = useDatePickerState(date_props);
     let ref = useRef();
+
     let {
         groupProps,
-        fieldProps
+        fieldProps // @ts-ignore
       } = useDatePicker(date_props, state, ref);
 
 
@@ -240,7 +241,7 @@ const CreateAssignmentModal = ({
                                     </Combobox>
                                     {/*    Date Picker */}
                                     <div className="relative inline-flex flex-col text-left">
-
+                                        {/* @ts-ignore */}
                                         <div {...groupProps} ref={ref} className="flex group">
                                             <div
                                                 className="rounded-lg shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-primary sm:text-sm bg-white group-hover:border-gray-400 transition-colors pr-2 group-focus-within:border-violet-600 group-focus-within:group-hover:border-violet-600 p-2 relative flex items-center">
@@ -260,7 +261,7 @@ const CreateAssignmentModal = ({
                                     type="submit"
                                     disabled={!valid}
 
-                                    className="inline-flex justify-center rounded-3xl border border-transparent bg-primary/80 px-4 py-2 text-sm font-medium text-white hover:bg-primary/75 disabled:bg-primary/75 disabled:hover:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-all ease-in-out duration-300"
+                                    className="inline-flex justify-center rounded-3xl border border-transparent bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/75 disabled:bg-primary/75 disabled:hover:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-all ease-in-out duration-300"
                                 >
                                     Create
                                 </button>

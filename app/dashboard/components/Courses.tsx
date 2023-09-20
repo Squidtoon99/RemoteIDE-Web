@@ -13,15 +13,15 @@ const getClasses = async () => {
 };
 
 const Classes = async () => {
-    const colors = ['bg-accent-orange', 'bg-secondary', 'bg-accent-green'];
+    const colors = ['bg-accent-first', 'bg-accent-second', 'bg-accent-third'];
     const classes: any[] = await getClasses();
     return <div className="max-w-xs h-56 flex flex-col gap-4 mt-8">
         {classes.map((c: any, i: number) => {
             return <Link key={i} href={`dashboard/courses/${c.id}`}>
-                <div className={`flex flex-row ${colors[i]} rounded-2xl p-3 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all ease-in-out duration-500`} key={c.id}>
+                <div className={`flex text-primary flex-row ${colors[i]} rounded-2xl p-3 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all ease-in-out duration-500`} key={c.id}>
                     <div className="flex flex-col flex-grow">
                         <h3 style={title.style} className="text-base font-bold flex-grow">{c.name}</h3>
-                        <p className="font-base text-sm"><strong>8</strong> Assignments</p>
+                        <p className="font-base text-sm"><strong>81</strong> Assignments</p>
                     </div>
                     <div className="h-8 w-8">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

@@ -22,13 +22,13 @@ const bg = (day: Date) => {
     let cls = [];
     if (day.getDate() === new Date().getDate() && day.getMonth() === new Date().getMonth()) {
         cls.push(...["bg-primary",
-            "text-white",
+            "text-white-white",
             "p-1 sm:p-0",
             "rounded-full"]);
     } else if (day.getMonth() === new Date().getMonth()) {
-        cls.push("text-primary");
+        cls.push("text-white-primary");
     } else {
-        cls.push("text-gray-200");
+        cls.push("text-white-gray-200");
     }
 
     return cls.join(" ");
@@ -56,7 +56,7 @@ const Calendar = () => {
         <div className="md:p-8 p-5 bg-white rounded-xl max-w-md" style={quint.style}>
             <div className="px-4 flex items-center justify-between">
                 <span
-                    className="focus:outline-none text-base font-bold text-gray-800 tracking-wide">{format(date, "MMMM yyyy")}</span>
+                    className="focus:outline-none text-white-base font-bold text-white-gray-800 tracking-wide">{format(date, "MMMM yyyy")}</span>
             </div>
             <div className="flex items-center justify-between pt-4 overflow-x-auto">
                 <table className="w-full" style={quint.style}>
@@ -66,7 +66,7 @@ const Calendar = () => {
                             return (
                                 <th key={i}>
                                     <div className="w-full flex justify-center">
-                                        <p className="text-base font-light text-center text-gray-800">{day}</p>
+                                        <p className="text-white-base font-light text-white-center text-white-gray-800">{day}</p>
                                     </div>
                                 </th>
                             );
@@ -83,7 +83,7 @@ const Calendar = () => {
                                         <td key={i}>
                                             <Link href={`/dashboard/calendar/?q=${day.getMonth()}-${day.getDay()}-${day.getFullYear()}`}>
                                                 <div className="px-2 py-2 cursor-pointer flex w-full justify-center">
-                                                    <p className={`text-base ${bg(day)}`}>{format(day, "d")}</p>
+                                                    <p className={`text-white-base ${bg(day)}`}>{format(day, "d")}</p>
                                                 </div>
                                             </Link>
                                         </td>

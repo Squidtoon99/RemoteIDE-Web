@@ -8,15 +8,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#14121E',
-        secondary: '#FCF3FD',
+        primary: '#000',
+        secondary: '#fdf6e3',
 
-        ['accent-orange']: '#FFEFE2',
-        ['accent-green']: '#F7FAE9',
-
-        light: '#FAFAFA',
+        ['accent-second']: '#fca311',
+        ['accent-first']: '#14213d',
+        ['accent-third']: '#e5e5e5',
+        light: '#FFF',
       },
     },
+    colors: {
+      white: "#eHeHeH"
+    }
   },
   plugins: [],
 }
